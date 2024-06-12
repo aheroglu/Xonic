@@ -1,0 +1,36 @@
+<ion-content [fullscreen]="true">
+  <ion-grid class="ion-margin">
+    <ion-row>
+      <ion-col>
+        <ion-title>Xonic</ion-title>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-margin">
+        <ion-label class="sub-header">Happening now</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-margin">
+        <ion-label class="description">Join today.</ion-label>
+        <ion-button shape="round" expand="block" routerLink="/welcome/signup"
+          >Create account</ion-button
+        >
+        <div class="sign-in-area">
+          <ion-label class="have-account-label"
+            >Already have an account?</ion-label
+          >
+          <ion-button
+            shape="round"
+            expand="block"
+            fill="outline"
+            routerLink="/welcome/signin"
+            >Sign in</ion-button
+          >
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer class="ion-no-border">&#64; 2024 <span>Xonic</span></ion-footer>

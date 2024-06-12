@@ -1,0 +1,19 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="home" href="/tabs/home">
+      <ion-icon aria-hidden="true" name="home"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="search" href="/tabs/search">
+      <ion-icon aria-hidden="true" name="search"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="notifications" href="/tabs/notifications">
+      <ion-icon aria-hidden="true" name="notifications-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button (click)="triggerAlert()">
+      <ion-icon aria-hidden="true" name="mail-outline"></ion-icon>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>
