@@ -19,6 +19,11 @@ const routes: Routes = [
       import('./bookmarks/bookmarks.module').then((m) => m.BookmarksPageModule),
   },
   {
+    path: 'settings',
+    loadChildren: () =>
+      import('./settings/settings.module').then((m) => m.SettingsPageModule),
+  },
+  {
     path: ':username',
     loadChildren: () =>
       import('./user/user.module').then((m) => m.UserPageModule),

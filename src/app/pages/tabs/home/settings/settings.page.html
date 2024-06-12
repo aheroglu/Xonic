@@ -1,0 +1,17 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Settings</ion-title>
+    <ion-label>&#64;{{ loggedUser?.userData.username }}</ion-label>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list lines="none" class="ion-no-margin ion-no-padding">
+    <ion-item detail="true" button routerLink="/tabs/home/settings/your-account">
+      <ion-label slot="start">Your Account</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

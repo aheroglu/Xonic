@@ -1,0 +1,44 @@
+ion-header {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  will-change: opacity, transform;
+
+  ion-title {
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  ion-label {
+    font-size: 13px;
+    margin-left: 20px;
+    padding: 0;
+    font-weight: lighter;
+  }
+}
+
+ion-content {
+  ion-grid {
+    ion-row {
+      ion-col {
+        margin: 5px 5px;
+
+        ion-title {
+          margin: 0 0 20px 0;
+          padding: 0;
+          font-weight: bold;
+        }
+
+        ion-label {
+          margin: 0;
+          padding: 0;
+          font-weight: lighter;
+          font-size: 16px;
+          line-height: normal;
+        }
+
+        ion-button {
+          text-transform: capitalize;
+        }
+      }
+    }
+  }
+}

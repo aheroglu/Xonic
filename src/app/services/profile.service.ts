@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Firestore } from '@angular/fire/firestore';
 import { collection, doc, query, updateDoc, where } from 'firebase/firestore';
 import { finalize } from 'rxjs';
@@ -7,7 +9,11 @@ import { finalize } from 'rxjs';
   providedIn: 'root',
 })
 export class ProfileService {
-  constructor(private firestore: Firestore) {}
+  constructor(
+    private firestore: Firestore,
+    private afs: AngularFirestore,
+    private afAuth: AngularFireAuth
+  ) {}
 
   async updateUserData(uid: string, model: any): Promise<any> {
     const docRef = doc(this.firestore, 'users', uid);
@@ -46,4 +52,40 @@ export class ProfileService {
   //     document.getElementById('coverInput').click();
   //   }
   // }
+
+  async deleteUser() {
+    return new Promise<void>((resolve, reject) => {
+      this.afAuth.currentUser
+        .then((user) => {
+          if (user) {
+            user
+              .delete()
+              .then(() => {
+                resolve();
+
+                this.afs
+                  .collection('posts', (ref) =>
+                    ref.where('uid', '==', user.uid)
+                  )
+                  .get()
+                  .toPromise()
+                  .then((querySnapshot) => {
+                    const batch = this.afs.firestore.batch();
+                    querySnapshot.forEach((doc) => {
+                      batch.delete(doc.ref);
+                    });
+                  });
+              })
+              .catch((err) => {
+                reject(err);
+              });
+          } else {
+            reject('No user in currently signed in.');
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
 }
