@@ -1,0 +1,100 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/home/profile"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit profile</ion-title>
+    <ion-button
+      [disabled]="!form.valid"
+      (click)="onFormSubmit()"
+      slot="end"
+      shape="round"
+      color="dark"
+      class="ion-margin-end"
+      size="small"
+      >Save</ion-button
+    >
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form #form="ngForm" (ngSubmit)="onFormSubmit()">
+    <ion-grid class="ion-no-margin ion-no-padding">
+      <ion-row class="">
+        <ion-col class="cover-image">
+          <ion-img
+            [src]="model?.coverimage ? model?.coverimage : 'https://firebasestorage.googleapis.com/v0/b/xonic-aheroglu.appspot.com/o/defaults%2Fdefault-cover.png?alt=media&token=3fe1c2a8-d957-436e-87fd-c8aa5c7ca5b3'"
+            alt="cover image"
+          ></ion-img>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="profile-image">
+          <ion-avatar>
+            <img
+              [src]="model?.profileimage ? model?.profileimage : 'https://firebasestorage.googleapis.com/v0/b/xonic-aheroglu.appspot.com/o/defaults%2Fdefault-user.jpg?alt=media&token=8d24d692-e813-4eb2-9622-f00b473cdbd7'"
+            />
+          </ion-avatar>
+        </ion-col>
+      </ion-row>
+      <div class="inputs">
+        <ion-row>
+          <ion-col>
+            <ion-input
+              #name="ngModel"
+              [(ngModel)]="model.name"
+              name="name"
+              required
+              type="text"
+              label="Name"
+              labelPlacement="floating"
+              fill="outline"
+            ></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-textarea
+              #bio="ngModel"
+              [(ngModel)]="model.bio"
+              name="bio"
+              required
+              label="Bio"
+              labelPlacement="floating"
+              fill="outline"
+              rows="4"
+            ></ion-textarea>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-input
+              #location="ngModel"
+              [(ngModel)]="model.location"
+              name="location"
+              required
+              type="text"
+              label="Location"
+              labelPlacement="floating"
+              fill="outline"
+            ></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-input
+              #website="ngModel"
+              [(ngModel)]="model.website"
+              name="website"
+              required
+              type="text"
+              label="Website"
+              labelPlacement="floating"
+              fill="outline"
+            ></ion-input>
+          </ion-col>
+        </ion-row>
+      </div>
+    </ion-grid>
+  </form>
+</ion-content>

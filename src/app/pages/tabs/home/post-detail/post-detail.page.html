@@ -1,0 +1,168 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Post</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content
+  [fullscreen]="true"
+  scrollEvents="true"
+  (ionScroll)="onScroll($event)"
+>
+  <ng-container *ngIf="!isLoadingShowing">
+    <ion-grid class="ion-no-margin">
+      <ion-row>
+        <ion-col class="post-area-top">
+          <ion-avatar>
+            <img
+              [src]="post?.user.profileimage ? post?.user.profileimage : 'https://firebasestorage.googleapis.com/v0/b/xonic-aheroglu.appspot.com/o/defaults%2Fdefault-user.jpg?alt=media&token=8d24d692-e813-4eb2-9622-f00b473cdbd7'"
+              alt="user image"
+            />
+          </ion-avatar>
+          <div class="post-area-top-user-info">
+            <ion-label>{{ post?.user.name }}</ion-label>
+            <ion-label>&#64;{{ post?.user.username }}</ion-label>
+          </div>
+          <ion-button size="small" shape="round" color="dark"
+            >Follow</ion-button
+          >
+          <ion-buttons>
+            <ion-button shape="round" color="dark">
+              <ion-icon
+                size="small"
+                name="ellipsis-horizontal"
+                slot="icon-only"
+              ></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="post-area-center">
+          <ion-text>{{ post?.content }}</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="post-area-info">
+          <ion-label>{{ post?.created | date: 'h:mm a • MMM d, y' }}</ion-label>
+          <ion-label>• <span>12K</span> Views</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="action-buttons">
+          <ion-buttons>
+            <ion-button
+              [routerLink]="['/tabs/home/comment', post?.id]"
+              shape="round"
+            >
+              <ion-icon size="small" name="chatbubble-outline"></ion-icon>
+              <ion-label
+                >{{ post?.comments ? (post?.comments | keyvalue).length : 0
+                }}</ion-label
+              >
+            </ion-button>
+            <ion-button (click)="presentAlert()" shape="round">
+              <ion-icon size="small" name="repeat-outline"></ion-icon>
+              <ion-label></ion-label>
+            </ion-button>
+            <ion-button
+              (click)="likePost(post)"
+              shape="round"
+              [color]="isLikedByUser(post) ? 'danger' : ''"
+            >
+              <ion-icon
+                size="small"
+                [name]="isLikedByUser(post) ? 'heart' : 'heart-outline'"
+              ></ion-icon>
+              <ion-label>{{ post?.likes.length }}</ion-label>
+            </ion-button>
+            <ion-button shape="round">
+              <ion-icon size="small" name="bookmark-outline"></ion-icon>
+            </ion-button>
+            <ion-button shape="round">
+              <ion-icon size="small" name="share-social-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-card
+          *ngFor="let comment of commentsArray"
+          class="article ion-no-margin ion-no-padding"
+        >
+          <ion-card-content class="ion-no-padding">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="2" class="profile-col">
+                  <ion-avatar
+                    [routerLink]="['/tabs/home/', comment?.user.username]"
+                  >
+                    <img
+                      [src]="comment?.user.profileimage ? comment.user.profileimage : 'https://firebasestorage.googleapis.com/v0/b/xonic-aheroglu.appspot.com/o/defaults%2Fdefault-user.jpg?alt=media&token=8d24d692-e813-4eb2-9622-f00b473cdbd7'"
+                    />
+                  </ion-avatar>
+                </ion-col>
+                <ion-col size="10" class="content-col">
+                  <ion-row>
+                    <ion-col class="ion-no-margin ion-no-padding">
+                      <div class="article-header ion-no-margin ion-no-padding">
+                        <ion-label
+                          [routerLink]="['/tabs/home/', comment?.user.username]"
+                          class="article-username"
+                        >
+                          {{ comment.user.name }}
+                          <ion-icon
+                            name="checkmark-circle"
+                            color="primary"
+                          ></ion-icon>
+                        </ion-label>
+                        <ion-label
+                          [routerLink]="['/tabs/home/', comment?.user.username]"
+                          >&#64;{{ comment.user.username }}</ion-label
+                        >
+                        <ion-label
+                          >• {{ comment?.created.toDate() | timeago
+                          }}</ion-label
+                        >
+                        <ion-buttons slot="end">
+                          <ion-button
+                            (click)="presentActionSheet(comment.user.id, post.id, comment.id)"
+                          >
+                            <ion-icon
+                              slot="icon-only"
+                              name="ellipsis-horizontal-outline"
+                            ></ion-icon>
+                          </ion-button>
+                        </ion-buttons>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col class="ion-no-margin ion-no-padding">
+                      <ion-text
+                        class="article-content"
+                        [routerLink]="['/tabs/home/post-detail', post.id]"
+                      >
+                        {{ comment.content | truncate }}
+                      </ion-text>
+                      <ion-label
+                        *ngIf="comment.content.length > 250"
+                        class="show-more"
+                        >Show more</ion-label
+                      >
+                    </ion-col>
+                  </ion-row>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+
+  <ion-spinner *ngIf="isLoadingShowing" name="crescent"></ion-spinner>
+</ion-content>

@@ -1,0 +1,42 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/home/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Your Account</ion-title>
+    <ion-label>&#64;{{ loggedUser?.userData.username }}</ion-label>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list lines="none">
+    <ion-item
+      detail="true"
+      class="ion-margin-start"
+      button
+      routerLink="/tabs/home/settings/your-account/change-password"
+    >
+      <ion-icon slot="start" name="key-outline" size="small"></ion-icon>
+      <div>
+        <ion-label>Change your password</ion-label>
+        <ion-label>Change your password at any time.</ion-label>
+      </div>
+    </ion-item>
+    <ion-item
+      detail="true"
+      class="ion-margin-start"
+      button
+      routerLink="/tabs/home/settings/your-account/delete-account"
+    >
+      <ion-icon
+        slot="start"
+        name="person-remove-outline"
+        size="small"
+      ></ion-icon>
+      <div>
+        <ion-label>Delete your account</ion-label>
+        <ion-label>Delete your account completely.</ion-label>
+      </div>
+    </ion-item>
+  </ion-list>
+</ion-content>

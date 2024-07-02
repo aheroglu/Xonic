@@ -1,0 +1,49 @@
+ion-content {
+  ion-title {
+    font-family: "Montez", cursive;
+    font-size: 4rem;
+  }
+
+  .sub-header {
+    font-weight: bold;
+    font-size: 40px;
+  }
+
+  .description {
+    display: block;
+    margin: 0 0 20px 0;
+    font-size: 23px;
+    font-weight: bold;
+  }
+
+  ion-button {
+    --border-width: 1px;
+
+    font-size: 15px;
+    text-transform: initial;
+    margin: 10px 0;
+  }
+
+  .sign-in-area {
+    margin-top: 22px;
+
+    .have-account-label {
+      font-size: 17px;
+      font-weight: 600;
+    }
+  }
+}
+
+ion-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: lighter;
+
+  span {
+    margin-left: 4px;
+    font-weight: normal;
+    font-family: "Montez", cursive;
+    font-size: 1.5rem;
+  }
+}

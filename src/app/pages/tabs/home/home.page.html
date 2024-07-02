@@ -1,0 +1,330 @@
+<ion-menu contentId="main-content" side="start">
+  <ion-header class="ion-no-border ion-margin-horizontal">
+    <ion-toolbar>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" class="menu-profile-avatar">
+            <ion-buttons routerLink="/tabs/home/profile">
+              <ion-avatar>
+                <img
+                  [src]="loggedUser?.userData.profileimage ? loggedUser?.userData.profileimage : 'https://firebasestorage.googleapis.com/v0/b/xonic-aheroglu.appspot.com/o/defaults%2Fdefault-user.jpg?alt=media&token=8d24d692-e813-4eb2-9622-f00b473cdbd7'"
+                />
+              </ion-avatar>
+            </ion-buttons>
+          </ion-col>
+          <ion-col size="12" class="menu-fullname">
+            <ion-label routerLink="/tabs/home/profile"
+              >{{ loggedUser?.userData.name }}</ion-label
+            >
+          </ion-col>
+          <ion-col size="12" class="menu-username">
+            <ion-label routerLink="/tabs/home/profile"
+              >&#64;{{ loggedUser?.userData.username }}</ion-label
+            >
+          </ion-col>
+          <ion-col size="12" class="ion-margin-top">
+            <ion-label class="menu-following"
+              ><span class="count">{{ followingCount }}</span>
+              Following</ion-label
+            >
+            <ion-label class="menu-follower"
+              ><span class="count">{{ followerCount }}</span>
+              Follower</ion-label
+            >
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list lines="none">
+      <ion-item button routerLink="/tabs/home/profile">
+        <ion-icon name="person-outline" slot="start"></ion-icon>
+        <ion-label>Profile</ion-label>
+      </ion-item>
+      <ion-item button routerLink="/tabs/home/bookmarks">
+        <ion-icon name="bookmark-outline" slot="start"></ion-icon>
+        <ion-label>Bookmarks</ion-label>
+      </ion-item>
+      <ion-item button routerLink="/tabs/home/settings">
+        <ion-icon name="settings-outline" slot="start"></ion-icon>
+        <ion-label>Settings</ion-label>
+      </ion-item>
+      <ion-item button (click)="signOut()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        <ion-label>Log out</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-modal trigger="add-new-modal">
+  <ng-template>
+    <ion-header class="ion-no-border">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="closeModal()" shape="round">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button color="primary" shape="round" fill="clear"
+            >Drafts</ion-button
+          >
+          <ion-button
+            [disabled]="!form.valid"
+            (click)="createPost()"
+            color="primary"
+            shape="round"
+            fill="solid"
+            >Post</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-margin-horizontal ion-padding-horizontal">
+      <form #form="ngForm" (ngSubmit)="createPost()">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="2" class="profile-col">
+              <ion-avatar>
+                <img
+                  [src]="loggedUser?.userData.profileimage ? loggedUser?.userData.profileimage : 'https://firebasestorage.googleapis.com/v0/b/xonic-aheroglu.appspot.com/o/defaults%2Fdefault-user.jpg?alt=media&token=8d24d692-e813-4eb2-9622-f00b473cdbd7'"
+                />
+              </ion-avatar>
+            </ion-col>
+            <ion-col size="10">
+              <ion-textarea
+                #content="ngModel"
+                [(ngModel)]="createArticleModel.content"
+                name="content"
+                color="transparent"
+                shape="round"
+                placeholder="What is happening?!"
+                required
+                [counter]="true"
+                maxlength="2000"
+              ></ion-textarea>
+            </ion-col>
+            <ion-col class="error-col">
+              <ion-label
+                *ngIf="content.errors?.['required']&& (content.dirty || content.touched)"
+                class="error"
+                >Required</ion-label
+              >
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-button
+                (click)="changeReplyType()"
+                class="reply-option-button ion-no-padding"
+                fill="clear"
+                shape="round"
+              >
+                <ion-icon name="earth-outline"></ion-icon>
+                {{ createArticleModel.replytype }}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<div class="ion-page" id="main-content">
+  <ion-header class="ion-no-border" [class.ion-header-hidden]="hideHeader">
+    <ion-toolbar>
+      <ion-menu-button slot="start" class="ion-margin-start">
+        <ion-avatar>
+          <img
+            [src]="loggedUser?.userData.profileimage ? loggedUser?.userData.profileimage : 'https://firebasestorage.googleapis.com/v0/b/xonic-aheroglu.appspot.com/o/defaults%2Fdefault-user.jpg?alt=media&token=8d24d692-e813-4eb2-9622-f00b473cdbd7'"
+          />
+        </ion-avatar>
+      </ion-menu-button>
+      <ion-title class="ion-text-center">Xonic</ion-title>
+      <ion-buttons slot="end">
+        <ion-button>
+          <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content
+    [fullscreen]="true"
+    scrollEvents="true"
+    (ionScroll)="onScroll($event)"
+  >
+    <ion-refresher
+      slot="fixed"
+      (ionRefresh)="refreshPage($event)"
+      [closeDuration]="isLoadingShowing"
+    >
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
+    <ion-segment
+      value="default"
+      (ionChange)="segmentChanged($event)"
+      value="following"
+    >
+      <ion-segment-button value="for-you">
+        <ion-label>For You</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="following">
+        <ion-label>Following</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <ng-container
+      *ngIf="selectedSegment === 'for-you' && !isLoadingShowing"
+    ></ng-container>
+
+    <ng-container *ngIf="selectedSegment === 'following' && !isLoadingShowing">
+      <ion-card
+        *ngFor="let post of followingPosts"
+        class="article ion-no-margin"
+      >
+        <ion-card-content class="ion-no-padding">
+          <ion-grid>
+            <ion-row>
+              <ion-col class="repost-info">
+                <ion-icon name="repeat-outline"></ion-icon>
+                <ion-label>Elon Musk reposted</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="2" class="profile-col">
+                <ion-avatar [routerLink]="['/tabs/home/', post?.user.username]">
+                  <img
+                    [src]="post?.user.profileimage ? post?.user.profileimage : 'https://firebasestorage.googleapis.com/v0/b/xonic-aheroglu.appspot.com/o/defaults%2Fdefault-user.jpg?alt=media&token=8d24d692-e813-4eb2-9622-f00b473cdbd7'"
+                  />
+                </ion-avatar>
+              </ion-col>
+              <ion-col size="10" class="content-col">
+                <ion-row>
+                  <ion-col class="ion-no-margin ion-no-padding">
+                    <div class="article-header ion-no-margin ion-no-padding">
+                      <ion-label
+                        [routerLink]="['/tabs/home/', post?.user.username]"
+                        class="article-username"
+                      >
+                        {{ post.user.name }}
+                        <ion-icon
+                          name="checkmark-circle"
+                          color="primary"
+                        ></ion-icon>
+                      </ion-label>
+                      <ion-label
+                        [routerLink]="['/tabs/home/', post?.user.username]"
+                        >&#64;{{ post.user.username }}</ion-label
+                      >
+                      <ion-label>• {{ post.created | timeago }}</ion-label>
+                      <ion-buttons slot="end">
+                        <ion-button>
+                          <ion-icon
+                            slot="icon-only"
+                            name="ellipsis-horizontal-outline"
+                          ></ion-icon>
+                        </ion-button>
+                      </ion-buttons>
+                    </div>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col class="ion-no-margin ion-no-padding">
+                    <ion-text
+                      class="article-content"
+                      [routerLink]="['/tabs/home/post-detail', post.id]"
+                    >
+                      {{ post.content | truncate }}
+                    </ion-text>
+                    <ion-label
+                      [routerLink]="['/tabs/home/post-detail', post.id]"
+                      *ngIf="post.content.length > 250"
+                      class="show-more"
+                      >Show more</ion-label
+                    >
+                    <ion-col class="action-buttons">
+                      <ion-buttons>
+                        <ion-button
+                          [routerLink]="['/tabs/home/comment', post.id]"
+                          shape="round"
+                        >
+                          <ion-icon
+                            size="small"
+                            name="chatbubble-outline"
+                          ></ion-icon>
+                          <ion-label
+                            >{{ post.comments ? (post.comments |
+                            keyvalue).length : 0 }}</ion-label
+                          >
+                        </ion-button>
+                        <ion-button (click)="presentAlert()" shape="round">
+                          <ion-icon
+                            size="small"
+                            name="repeat-outline"
+                          ></ion-icon>
+                          <ion-label></ion-label>
+                        </ion-button>
+                        <ion-button
+                          (click)="likePost(post)"
+                          shape="round"
+                          [color]="isLikedByUser(post) ? 'danger' : ''"
+                        >
+                          <ion-icon
+                            size="small"
+                            [name]="isLikedByUser(post) ? 'heart' : 'heart-outline'"
+                          ></ion-icon>
+                          <ion-label>{{ post.likes?.length }}</ion-label>
+                        </ion-button>
+                        <ion-button
+                          (click)="createBookmark(post)"
+                          shape="round"
+                        >
+                          <ion-icon
+                            size="small"
+                            name="bookmark-outline"
+                          ></ion-icon>
+                        </ion-button>
+                        <ion-button shape="round">
+                          <ion-icon
+                            size="small"
+                            name="share-social-outline"
+                          ></ion-icon>
+                        </ion-button>
+                      </ion-buttons>
+                    </ion-col>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+    </ng-container>
+
+    <ion-spinner *ngIf="isLoadingShowing" name="crescent"></ion-spinner>
+
+    <ion-fab slot="fixed" horizontal="end" vertical="bottom">
+      <ion-fab-button id="add-new-modal">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+    <ion-fab
+      *ngIf="!isLoadingShowing"
+      id="scroll-fab"
+      slot="fixed"
+      horizontal="center"
+      vertical="bottom"
+      [class.hide-scroll-fab]="!showScrollButton"
+    >
+      <ion-fab-button color="light" (click)="scrollToTop()">
+        <ion-icon name="arrow-up-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ion-content>
+</div>

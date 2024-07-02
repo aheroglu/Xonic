@@ -1,0 +1,198 @@
+<ion-header class="ion-no-border" [class.ion-header-hidden]="hideHeader">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button *ngIf="searchContentVisible" (click)="closeSearch()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="!searchContentVisible" routerLink="/tabs/home">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-searchbar
+      (ionFocus)="presentSearchContent()"
+      (ionInput)="onSearch()"
+      [(ngModel)]="searchKey"
+      name="searchKey"
+      color="light"
+      showClearButton="always"
+      clearIcon="close-circle"
+      placeholder="Search"
+    ></ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon name="options-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content
+  [fullscreen]="true"
+  scrollEvents="true"
+  (ionScroll)="onScroll($event)"
+>
+  <ng-container *ngIf="!searchContentVisible">
+    <ion-segment
+      value="default"
+      (ionChange)="segmentChanged($event)"
+      value="for-you"
+    >
+      <ion-segment-button value="for-you">
+        <ion-label>For You</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="trending">
+        <ion-label>Trending</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="news">
+        <ion-label>News</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <ng-container *ngIf="selectedSegment === 'for-you'">
+      <ion-grid class="topic-section">
+        <ion-row>
+          <ion-col>
+            <ion-title class="section-title">Trends for you</ion-title>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-no-margin ion-no-padding">
+            <ion-list lines="none">
+              <ion-item
+                *ngFor="let topic of topics"
+                class="topic"
+                (click)="presentAlert()"
+                button
+              >
+                <div class="topic-content" slot="start">
+                  <ion-label class="topic-tag">&#35;{{ topic.tag }}</ion-label>
+                  <ion-label class="topic-post-count"
+                    >{{ topic.count }} posts</ion-label
+                  >
+                </div>
+                <ion-buttons slot="end">
+                  <ion-button shape="round">
+                    <ion-icon
+                      name="ellipsis-horizontal-outline"
+                      slot="end"
+                    ></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ng-container>
+
+    <ng-container *ngIf="selectedSegment === 'trending'">
+      <ion-grid class="topic-section">
+        <ion-row>
+          <ion-col>
+            <ion-title class="section-title">Trends</ion-title>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-no-margin ion-no-padding">
+            <ion-list lines="none">
+              <ion-item
+                *ngFor="let topic of topics"
+                class="topic"
+                (click)="presentAlert()"
+                button
+              >
+                <div class="topic-content" slot="start">
+                  <ion-label class="topic-tag">&#35;{{ topic.tag }}</ion-label>
+                  <ion-label class="topic-post-count"
+                    >{{ topic.count }} posts</ion-label
+                  >
+                </div>
+                <ion-buttons slot="end">
+                  <ion-button shape="round">
+                    <ion-icon
+                      name="ellipsis-horizontal-outline"
+                      slot="end"
+                    ></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ng-container>
+
+    <ng-container *ngIf="selectedSegment === 'news'">
+      <ion-grid class="topic-section">
+        <ion-row>
+          <ion-col class="ion-no-margin ion-no-padding">
+            <ion-list lines="none">
+              <ion-item
+                *ngFor="let topic of topics"
+                class="topic"
+                (click)="presentAlert()"
+                button
+              >
+                <div class="topic-content" slot="start">
+                  <ion-label class="topic-tag">&#35;{{ topic.tag }}</ion-label>
+                  <ion-label class="topic-post-count"
+                    >{{ topic.count }} posts</ion-label
+                  >
+                </div>
+                <ion-buttons slot="end">
+                  <ion-button shape="round">
+                    <ion-icon
+                      name="ellipsis-horizontal-outline"
+                      slot="end"
+                    ></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="searchContentVisible">
+    <ion-grid>
+      <ion-row *ngIf="!searchKey" class="search-info">
+        <ion-col class="ion-text-center">
+          <ion-label>Try searching for people</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="searchKey" class="search-for">
+        <ion-col>
+          <ion-label>Search for "{{ searchKey }}"</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="searchKey" class="search-values">
+        <ion-col>
+          <ion-list lines="none">
+            <ion-item
+              *ngFor="let user of searchedUser"
+              [routerLink]="['/tabs/home', user?.username]"
+              button
+              class="search-item"
+            >
+              <ion-avatar slot="start">
+                <img
+                  [src]="user?.profileimage ? user?.profileimage : 'https://firebasestorage.googleapis.com/v0/b/xonic-aheroglu.appspot.com/o/defaults%2Fdefault-user.jpg?alt=media&token=8d24d692-e813-4eb2-9622-f00b473cdbd7'"
+                  alt="user image"
+                />
+              </ion-avatar>
+              <div class="search-item-content">
+                <ion-label class="search-item-name">{{ user?.name }}</ion-label>
+                <ion-label class="search-item-username"
+                  >&#64;{{ user?.username }}</ion-label
+                >
+              </div>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-spinner *ngIf="isLoadingShowing" name="crescent"></ion-spinner>
+  </ng-container>
+</ion-content>

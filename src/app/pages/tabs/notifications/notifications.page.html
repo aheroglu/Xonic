@@ -1,0 +1,103 @@
+<ion-header class="ion-no-border" [class.ion-header-hidden]="hideHeader">
+  <ion-toolbar>
+    <ion-buttons slot="start" class="ion-margin-start">
+      <ion-avatar>
+        <img src="https://randomuser.me/api/portraits/men/2.jpg" />
+      </ion-avatar>
+    </ion-buttons>
+    <ion-title slot="start">Notifications</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content
+  [fullscreen]="true"
+  scrollEvents="true"
+  (ionScroll)="onScroll($event)"
+>
+  <ion-segment value="default" (ionChange)="segmentChanged($event)" value="all">
+    <ion-segment-button value="all">
+      <ion-label>All</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="mentions">
+      <ion-label>Mentions</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ng-container *ngIf="selectedSegment === 'all'">
+    <ion-list lines="full">
+      <ion-item
+        *ngFor="let notification of notifications"
+        class="notification-item"
+      >
+        <ion-grid class="ion-padding-vertical ion-margin-vertical">
+          <ion-row>
+            <ion-col size="2" class="notification-item-avatar">
+              <ion-avatar>
+                <img [src]="notification.img" />
+              </ion-avatar>
+            </ion-col>
+            <ion-col size="8" class="notification-item-content">
+              <ion-text class="notification-item-text"
+                >{{notification.text}}
+                <span class="notification-item-username"
+                  >{{ notification.username }}</span
+                ></ion-text
+              >
+            </ion-col>
+            <ion-col size="2" class="notification-item-icon ion-text-end">
+              <ion-icon
+                *ngIf="notification.icon === 'heart'"
+                [name]="notification.icon"
+                color="danger"
+              ></ion-icon>
+              <ion-icon
+                *ngIf="notification.icon === 'create'"
+                [name]="notification.icon"
+                color="primary"
+              ></ion-icon>
+              <ion-icon
+                *ngIf="notification.icon === 'person-add'"
+                [name]="notification.icon"
+                color="warning"
+              ></ion-icon>
+              <ion-icon
+                *ngIf="notification.icon === 'chatbubble'"
+                [name]="notification.icon"
+                color="success"
+              ></ion-icon>
+              <ion-icon
+                *ngIf="notification.icon === 'pricetag'"
+                [name]="notification.icon"
+                color="primary"
+              ></ion-icon>
+              <ion-icon
+                *ngIf="notification.icon === 'at'"
+                [name]="notification.icon"
+                color="primary"
+              ></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
+  <ng-container *ngIf="selectedSegment === 'mentions'"></ng-container>
+
+  <ion-fab
+    id="scroll-fab"
+    slot="fixed"
+    horizontal="center"
+    vertical="bottom"
+    [class.hide-scroll-fab]="!showScrollButton"
+  >
+    <ion-fab-button color="light" (click)="scrollToTop()">
+      <ion-icon name="arrow-up-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

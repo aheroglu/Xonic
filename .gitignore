@@ -1,0 +1,11 @@
+node_modules
+.angular
+
+src/environments
+
+# Firebase
+.firebase
+*-debug.log
+.runtimeconfig.json
+
+resources/android/**/*

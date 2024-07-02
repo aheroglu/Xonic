@@ -1,0 +1,8 @@
+{
+  "name": "Xonic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "24775278"
+}
